@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { MessageSquare, X } from 'lucide-react';
-import { Button } from './Button';
+import { Button } from './button';
 import { cn } from '@/lib/utils';
 
 interface ChatButtonProps {

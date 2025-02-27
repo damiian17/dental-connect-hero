@@ -1,7 +1,7 @@
 
 import { Network, BadgePercent, PiggyBank, Clock } from 'lucide-react';
 import { whyChooseUs } from '@/assets/mockData';
-import { Card } from './ui/Card';
+import { Card } from './ui/card';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import { cn } from '@/lib/utils';
 

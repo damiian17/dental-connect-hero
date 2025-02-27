@@ -1,6 +1,6 @@
 
 import { Phone, MessageSquare } from 'lucide-react';
-import { Button } from './ui/Button';
+import { Button } from './ui/button';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import { cn } from '@/lib/utils';
 

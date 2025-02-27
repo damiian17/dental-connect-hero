@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Menu, X, Phone } from 'lucide-react';
-import { Button } from './ui/Button';
+import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
 
 const Header = () => {

@@ -1,6 +1,6 @@
 
 import { Clock, User, MapPin, BellRing } from 'lucide-react';
-import { Card } from './ui/Card';
+import { Card } from './ui/card';
 import { benefits } from '@/assets/mockData';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import { cn } from '@/lib/utils';
