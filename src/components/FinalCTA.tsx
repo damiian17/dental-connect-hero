@@ -31,7 +31,7 @@ const FinalCTA = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
-            <a href="tel:+12768007201,5" className="w-full sm:w-auto">
+            <a href="tel:+12768007201" className="w-full sm:w-auto">
               <Button 
                 className="w-full sm:w-auto group"
                 size="lg"
