@@ -56,7 +56,7 @@ const Hero = () => {
               ctaVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             )}
           >
-            <a href="tel:900123456" className="w-full sm:w-auto">
+            <a href="tel:+12768007201,5" className="w-full sm:w-auto">
               <Button 
                 className="w-full sm:w-auto group"
                 size="lg"

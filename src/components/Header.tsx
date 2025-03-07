@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Menu, X, Phone } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
 
@@ -61,14 +61,7 @@ const Header = () => {
           </nav>
 
           {/* Call button */}
-          <div className="hidden md:flex items-center space-x-4">
-            <a 
-              href="tel:900123456" 
-              className="flex items-center text-dental-primary font-medium hover:text-dental-primary/80 transition-colors"
-            >
-              <Phone className="w-4 h-4 mr-2" />
-              900 123 456
-            </a>
+          <div className="hidden md:flex items-center">
             <Button>Pedir Cita</Button>
           </div>
 
@@ -98,14 +91,6 @@ const Header = () => {
                   {item.label}
                 </a>
               ))}
-              <a 
-                href="tel:900123456" 
-                className="py-3 flex items-center text-dental-primary font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Phone className="w-4 h-4 mr-2" />
-                900 123 456
-              </a>
               <Button className="mt-3" onClick={() => setIsMenuOpen(false)}>
                 Pedir Cita
               </Button>
