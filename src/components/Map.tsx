@@ -20,8 +20,6 @@ const Map = () => {
     // Here would go the actual search logic
     console.log('Searching for clinics near:', postalCode);
   };
-  return <section className="section-padding">
-      
-    </section>;
+  return;
 };
 export default Map;
