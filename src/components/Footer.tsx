@@ -1,11 +1,7 @@
-
 import { Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
-
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  
-  return (
-    <footer className="bg-gray-900 text-white pt-16 pb-8">
+  return <footer className="bg-gray-900 text-white pt-16 pb-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <div>
@@ -38,7 +34,7 @@ const Footer = () => {
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Urgencias dentales</a></li>
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Especialidades</a></li>
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Seguros dentales</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Ofertas exclusivas</a></li>
+              
             </ul>
           </div>
           
@@ -48,7 +44,7 @@ const Footer = () => {
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Sobre nosotros</a></li>
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Clínicas asociadas</a></li>
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Blog de salud dental</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Trabaja con nosotros</a></li>
+              
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contacto</a></li>
             </ul>
           </div>
@@ -57,7 +53,7 @@ const Footer = () => {
             <h4 className="text-lg font-bold mb-4">Contacto</h4>
             <p className="text-gray-400 mb-2">Llámanos: 900 123 456</p>
             <p className="text-gray-400 mb-2">Email: info@dentalconnect.es</p>
-            <p className="text-gray-400 mb-4">Horario: Lun-Vie 9:00-21:00</p>
+            
             <div className="bg-gray-800 rounded-lg p-4">
               <p className="text-sm text-gray-300">
                 <strong>Urgencias 24/7:</strong><br />
@@ -79,7 +75,7 @@ const Footer = () => {
               <a href="#" className="hover:text-gray-300 transition-colors">Política de privacidad</a>
               <a href="#" className="hover:text-gray-300 transition-colors">Términos y condiciones</a>
               <a href="#" className="hover:text-gray-300 transition-colors">Cookies</a>
-              <a href="#" className="hover:text-gray-300 transition-colors">Mapa del sitio</a>
+              
             </div>
           </div>
           
@@ -98,8 +94,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
