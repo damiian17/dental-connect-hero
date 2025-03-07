@@ -39,7 +39,7 @@ const Benefits = () => {
                     <IconComponent className="w-6 h-6" />
                   </div>
                   <h3 className="text-xl font-bold mb-3 mx-[12px]">{benefit.title}</h3>
-                  <p className="text-gray-600 mx-[12px]">{benefit.description}</p>
+                  <p className="text-gray-600 mx-[12px] py-0 my-[15px]">{benefit.description}</p>
                 </Card>
               </div>;
         })}
