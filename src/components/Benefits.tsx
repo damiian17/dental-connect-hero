@@ -35,7 +35,7 @@ const Benefits = () => {
           const IconComponent = IconMap[benefit.icon];
           return <div key={benefit.id} ref={elementRef as React.RefObject<HTMLDivElement>} className={cn("transition-all duration-700", "delay-" + index * 100, isIntersecting ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
                 <Card variant="benefit">
-                  <div className="flex items-center justify-center w-12 h-12 mb-5 rounded-full bg-dental-primary/10 text-dental-primary mx-[9px] my-[4px]">
+                  <div className="flex items-center justify-center w-12 h-12 mb-5 rounded-full bg-dental-primary/10 text-dental-primary mx-[9px] my-[9px]">
                     <IconComponent className="w-6 h-6" />
                   </div>
                   <h3 className="text-xl font-bold mb-3 mx-[12px]">{benefit.title}</h3>
