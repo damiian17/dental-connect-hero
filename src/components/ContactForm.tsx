@@ -1,9 +1,8 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
-import { supabase } from '@/lib/supabase';
+import { supabase, initializeTables } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
 
 const ContactForm = () => {
@@ -16,6 +15,10 @@ const ContactForm = () => {
     reason: '',
     time: ''
   });
+
+  useEffect(() => {
+    initializeTables();
+  }, []);
 
   const {
     elementRef: formRef,
@@ -40,7 +43,6 @@ const ContactForm = () => {
     setIsLoading(true);
     
     try {
-      // Submit the form data to Supabase
       const { error } = await supabase
         .from('contacts')
         .insert([formData]);
@@ -53,13 +55,11 @@ const ContactForm = () => {
           variant: "destructive"
         });
       } else {
-        // Show success message
         toast({
           title: "¡Enviado con éxito!",
           description: "Te enviaremos los detalles de tu cita por WhatsApp.",
         });
         
-        // Reset form
         setFormData({
           name: '',
           phone: '',
