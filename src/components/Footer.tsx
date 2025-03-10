@@ -1,3 +1,4 @@
+
 import { Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -63,7 +64,36 @@ const Footer = () => {
           </div>
         </div>
         
-        
+        <div className="border-t border-gray-800 pt-8 mt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="mb-4 md:mb-0">
+              <p className="text-gray-500 text-sm">
+                &copy; {currentYear} DentalConnect. Todos los derechos reservados.
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
+              <a href="#" className="hover:text-gray-300 transition-colors">Política de privacidad</a>
+              <a href="#" className="hover:text-gray-300 transition-colors">Términos y condiciones</a>
+              <a href="#" className="hover:text-gray-300 transition-colors">Cookies</a>
+              
+            </div>
+          </div>
+          
+          <div className="mt-8 text-center">
+            <div className="inline-flex flex-wrap justify-center gap-4 mb-4">
+              <img src="https://via.placeholder.com/80x40" alt="Clínica asociada" className="h-10 grayscale hover:grayscale-0 transition-all" />
+              <img src="https://via.placeholder.com/80x40" alt="Clínica asociada" className="h-10 grayscale hover:grayscale-0 transition-all" />
+              <img src="https://via.placeholder.com/80x40" alt="Clínica asociada" className="h-10 grayscale hover:grayscale-0 transition-all" />
+              <img src="https://via.placeholder.com/80x40" alt="Clínica asociada" className="h-10 grayscale hover:grayscale-0 transition-all" />
+              <img src="https://via.placeholder.com/80x40" alt="Clínica asociada" className="h-10 grayscale hover:grayscale-0 transition-all" />
+            </div>
+            
+            <p className="text-xs text-gray-600">
+              DentalConnect no ofrece servicios dentales directamente. Somos un servicio de conexión entre pacientes y clínicas dentales.
+            </p>
+          </div>
+        </div>
       </div>
     </footer>;
 };

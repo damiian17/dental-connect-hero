@@ -123,7 +123,7 @@ const ContactForm = () => {
               </div>
               
               <div>
-                <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">Tu ciudad</label>
+                <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">Código postal</label>
                 <input
                   type="text"
                   id="location"
@@ -132,7 +132,7 @@ const ContactForm = () => {
                   onChange={handleChange}
                   required
                   className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-dental-primary focus:border-transparent"
-                  placeholder="¿Dónde vives?"
+                  placeholder="Tu código postal"
                 />
               </div>
               
@@ -168,7 +168,6 @@ const ContactForm = () => {
                   <option value="">Selecciona una opción</option>
                   <option value="manana">Por la mañana</option>
                   <option value="tarde">Por la tarde</option>
-                  <option value="noche">Por la noche</option>
                 </select>
               </div>
             </div>
