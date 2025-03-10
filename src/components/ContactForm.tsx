@@ -56,7 +56,7 @@ const ContactForm = () => {
         // Show success message
         toast({
           title: "¡Enviado con éxito!",
-          description: "Te contactaremos pronto.",
+          description: "Te enviaremos los detalles de tu cita por WhatsApp.",
         });
         
         // Reset form
@@ -91,8 +91,8 @@ const ContactForm = () => {
           )}
         >
           <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-dental-dark">Contacta con nosotros</h2>
-            <p className="text-lg text-gray-600">Completa el formulario y te ayudaremos a encontrar la clínica ideal para ti</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-dental-dark">Solicita tu cita por WhatsApp</h2>
+            <p className="text-lg text-gray-600">Completa el formulario y te enviaremos los detalles de tu cita por WhatsApp</p>
           </div>
           
           <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 md:p-8 space-y-6">
@@ -112,7 +112,7 @@ const ContactForm = () => {
               </div>
               
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">WhatsApp</label>
                 <input
                   type="tel"
                   id="phone"
@@ -121,7 +121,7 @@ const ContactForm = () => {
                   onChange={handleChange}
                   required
                   className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-dental-primary focus:border-transparent"
-                  placeholder="Tu número de teléfono"
+                  placeholder="Tu número de WhatsApp"
                 />
               </div>
               
@@ -159,7 +159,7 @@ const ContactForm = () => {
               </div>
               
               <div>
-                <label htmlFor="time" className="block text-sm font-medium text-gray-700 mb-1">Mejor hora para contactarte</label>
+                <label htmlFor="time" className="block text-sm font-medium text-gray-700 mb-1">Horario preferido para la cita</label>
                 <select
                   id="time"
                   name="time"
@@ -182,7 +182,7 @@ const ContactForm = () => {
                 className="w-full sm:w-auto px-8 py-3 text-base font-medium"
                 disabled={isLoading}
               >
-                {isLoading ? "Enviando..." : "Enviar solicitud"}
+                {isLoading ? "Enviando..." : "Solicitar cita por WhatsApp"}
               </Button>
             </div>
           </form>
