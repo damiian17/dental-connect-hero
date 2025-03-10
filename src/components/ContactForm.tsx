@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+
+import { useState } from 'react';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
-import { supabase, initializeTables } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
 
 const ContactForm = () => {
@@ -15,10 +16,6 @@ const ContactForm = () => {
     reason: '',
     time: ''
   });
-
-  useEffect(() => {
-    initializeTables();
-  }, []);
 
   const {
     elementRef: formRef,

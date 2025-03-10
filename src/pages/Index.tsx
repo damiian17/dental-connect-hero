@@ -13,6 +13,7 @@ import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 import ChatButton from "@/components/ui/ChatButton";
 import { useEffect } from "react";
+import { Toaster } from "@/components/ui/toaster";
 
 const Index = () => {
   useEffect(() => {
@@ -57,6 +58,7 @@ const Index = () => {
       </main>
       <Footer />
       <ChatButton />
+      <Toaster />
     </div>
   );
 };
