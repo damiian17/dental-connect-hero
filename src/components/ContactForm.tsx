@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
@@ -64,6 +63,9 @@ const ContactForm = () => {
           reason: '',
           time: ''
         });
+        
+        // Redireccionar al WhatsApp después de enviar el formulario exitosamente
+        window.location.href = 'https://wa.me/34623378691';
       }
     } catch (err) {
       console.error('Error:', err);
@@ -174,9 +176,12 @@ const ContactForm = () => {
             
             <div className="text-center mt-8">
               <Button 
-                type="submit" 
+                type="button" 
                 className="w-full sm:w-auto px-8 py-3 text-base font-medium"
                 disabled={isLoading}
+                onClick={() => {
+                  window.location.href = 'https://wa.me/34623378691';
+                }}
               >
                 {isLoading ? "Enviando..." : "Solicitar cita por WhatsApp"}
               </Button>
