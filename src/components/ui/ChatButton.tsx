@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { MessageSquare, X, Bot, Send } from 'lucide-react';
-import { Button } from './button';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
