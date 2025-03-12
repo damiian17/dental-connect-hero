@@ -1,4 +1,3 @@
-
 import { Phone, MessageSquare } from 'lucide-react';
 import { Button } from './ui/button';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
@@ -69,9 +68,13 @@ const Hero = () => {
               variant="secondary"
               className="w-full sm:w-auto group"
               size="lg"
+              onClick={() => {
+                const contactSection = document.getElementById('contacto');
+                contactSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
             >
               <MessageSquare className="w-5 h-5 mr-2 group-hover:animate-wiggle" />
-              Chatea con Nosotros
+              Contactar por WhatsApp
             </Button>
           </div>
           
