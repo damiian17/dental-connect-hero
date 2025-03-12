@@ -1,8 +1,10 @@
 
-import { useState } from 'react';
-import { MessageSquare, X, Bot } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { MessageSquare, X, Bot, Send } from 'lucide-react';
 import { Button } from './button';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/lib/supabase';
+import { useToast } from '@/hooks/use-toast';
 
 interface ChatButtonProps {
   className?: string;
@@ -13,6 +15,7 @@ interface Message {
   content: string;
 }
 
+// Predefined Q&A for fallback
 const predefinedQA = {
   "¿Cómo funciona su servicio de centro de llamadas dental?": "Nuestro centro de llamadas dental actúa como un puente entre pacientes y clínicas dentales. Cuando nos llamas, nuestros representantes capacitados recopilan información sobre tus necesidades dentales, ubicación y preferencias. Luego te conectamos con una clínica dental apropiada de nuestra red de socios, ayudándote a asegurar una cita de manera rápida y eficiente.",
   "¿Hay alguna tarifa por usar su servicio?": "No, nuestro servicio es completamente gratuito para los pacientes. Somos compensados por nuestras clínicas dentales asociadas que valoran las referencias de pacientes que proporcionamos. Solo pagarás por los servicios dentales reales que recibas en la clínica.",
@@ -28,36 +31,84 @@ const ChatButton = ({ className }: ChatButtonProps) => {
     { type: 'bot', content: '¡Hola! Soy Carla, tu asistente virtual. ¿En qué puedo ayudarte hoy?' }
   ]);
   const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [threadId, setThreadId] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
     const userMessage = inputValue.trim();
     setMessages(prev => [...prev, { type: 'user', content: userMessage }]);
     setInputValue('');
+    setIsLoading(true);
 
-    // Find the closest matching question
-    const bestMatch = Object.entries(predefinedQA).reduce((best, [question, answer]) => {
-      const similarity = question.toLowerCase().includes(userMessage.toLowerCase()) ||
-                        userMessage.toLowerCase().includes(question.toLowerCase());
-      return similarity ? [question, answer] : best;
-    }, ['', '']);
+    try {
+      // Call the Supabase Edge Function
+      const { data, error } = await supabase.functions.invoke('chat-assistant', {
+        body: { message: userMessage, threadId }
+      });
 
-    if (bestMatch[1]) {
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (!data) {
+        throw new Error('No data received from assistant');
+      }
+
+      // Store the thread ID for future messages
+      if (data.threadId) {
+        setThreadId(data.threadId);
+      }
+
+      // Add the assistant's response to the messages
       setTimeout(() => {
-        setMessages(prev => [...prev, { type: 'bot', content: bestMatch[1] }]);
+        setMessages(prev => [...prev, { type: 'bot', content: data.response }]);
+        setIsLoading(false);
       }, 500);
-    } else {
-      setTimeout(() => {
-        setMessages(prev => [...prev, { 
-          type: 'bot', 
-          content: "Lo siento, no he entendido tu pregunta. ¿Podrías reformularla o elegir una de las preguntas frecuentes?" 
-        }]);
-      }, 500);
+    } catch (error) {
+      console.error('Error communicating with assistant:', error);
+      
+      // Fallback to predefined answers
+      const bestMatch = Object.entries(predefinedQA).reduce((best, [question, answer]) => {
+        const similarity = question.toLowerCase().includes(userMessage.toLowerCase()) ||
+                          userMessage.toLowerCase().includes(question.toLowerCase());
+        return similarity ? [question, answer] : best;
+      }, ['', '']);
+
+      if (bestMatch[1]) {
+        setTimeout(() => {
+          setMessages(prev => [...prev, { type: 'bot', content: bestMatch[1] }]);
+          setIsLoading(false);
+        }, 500);
+      } else {
+        setTimeout(() => {
+          setMessages(prev => [...prev, { 
+            type: 'bot', 
+            content: "Lo siento, no he entendido tu pregunta. ¿Podrías reformularla o elegir una de las preguntas frecuentes?" 
+          }]);
+          setIsLoading(false);
+        }, 500);
+      }
+
+      toast({
+        title: 'Error de conexión',
+        description: 'Usando respuestas predefinidas como respaldo.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -98,6 +149,16 @@ const ChatButton = ({ className }: ChatButtonProps) => {
                 <p className="text-sm">{message.content}</p>
               </div>
             ))}
+            {isLoading && (
+              <div className="rounded-lg p-3 mb-4 max-w-[80%] bg-dental-primary/10">
+                <div className="flex space-x-2">
+                  <div className="w-2 h-2 rounded-full bg-dental-primary/40 animate-bounce"></div>
+                  <div className="w-2 h-2 rounded-full bg-dental-primary/40 animate-bounce delay-75"></div>
+                  <div className="w-2 h-2 rounded-full bg-dental-primary/40 animate-bounce delay-150"></div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
           <div className="p-4 border-t border-gray-100 flex gap-2">
             <input 
@@ -107,13 +168,18 @@ const ChatButton = ({ className }: ChatButtonProps) => {
               onKeyPress={handleKeyPress}
               placeholder="Escribe tu pregunta..." 
               className="input-field text-sm flex-1 py-2" 
+              disabled={isLoading}
             />
             <Button 
               size="sm" 
               className="py-2"
               onClick={handleSendMessage}
+              disabled={isLoading}
             >
-              Enviar
+              {isLoading ? 
+                <div className="w-4 h-4 rounded-full border-2 border-t-transparent border-white animate-spin"></div> :
+                <Send size={16} />
+              }
             </Button>
           </div>
         </div>
