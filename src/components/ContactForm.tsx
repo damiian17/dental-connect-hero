@@ -56,9 +56,6 @@ const ContactForm = () => {
           description: "Te enviaremos los detalles de tu cita por WhatsApp.",
         });
         
-        // Redireccionar a WhatsApp después de enviar el formulario exitosamente
-        window.location.href = 'https://wa.me/34623378691';
-        
         // Resetear el formulario
         setFormData({
           name: '',
@@ -67,6 +64,9 @@ const ContactForm = () => {
           reason: '',
           time: ''
         });
+        
+        // Redireccionar a WhatsApp después de guardar en Supabase
+        window.location.href = 'https://wa.me/34623378691';
       }
     } catch (err) {
       console.error('Error:', err);
