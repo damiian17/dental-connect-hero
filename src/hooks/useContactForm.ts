@@ -38,30 +38,43 @@ export function useContactForm(): UseContactFormReturn {
     }));
   };
 
+  const getReasonLabel = (reasonValue: string): string => {
+    const reasonMap: Record<string, string> = {
+      'implantes': 'Implantes',
+      'ortodincia': 'Ortodoncia',
+      'estetica': 'Estética dental',
+      'revision': 'Revisión general',
+      'otro': 'Otro tratamiento'
+    };
+    return reasonMap[reasonValue] || reasonValue;
+  };
+
+  const getTimeLabel = (timeValue: string): string => {
+    return timeValue === 'manana' ? 'mañana' : 'tarde';
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
     try {
-      // 1. Save data to Supabase
-      const { error } = await supabase
+      // 1. Save data to Supabase (non-blocking)
+      supabase
         .from('contacts')
-        .insert([formData]);
-      
-      if (error) {
-        console.error('Error submitting form to Supabase:', error);
-        toast({
-          title: "Error",
-          description: "Hubo un problema al enviar el formulario. Por favor, intenta de nuevo.",
-          variant: "destructive"
+        .insert([formData])
+        .then(({ error }) => {
+          if (error) {
+            console.error('Error submitting form to Supabase:', error);
+          }
+        })
+        .catch(err => {
+          console.error('Supabase insert error:', err);
         });
-        setIsLoading(false);
-        return;
-      }
       
       // 2. Send data to webhook (non-blocking)
       try {
-        fetch('https://primary-production-dec0c.up.railway.app/webhook-test/ba9346bd-dcc5-42b0-8e6f-223448d9376c', {
+        const webhookUrl = 'https://primary-production-dec0c.up.railway.app/webhook-test/ba9346bd-dcc5-42b0-8e6f-223448d9376c';
+        fetch(webhookUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -82,8 +95,10 @@ export function useContactForm(): UseContactFormReturn {
       });
       
       // 4. Prepare WhatsApp message
-      const mensajeWhatsApp = `Hola, soy ${formData.name}. Me gustaría solicitar una cita para ${formData.reason} en horario de ${formData.time === 'manana' ? 'mañana' : 'tarde'}.`;
-      const numeroFormateado = formatPhoneNumber(formData.phone);
+      const reasonLabel = getReasonLabel(formData.reason);
+      const timeLabel = getTimeLabel(formData.time);
+      
+      const mensajeWhatsApp = `Hola, soy ${formData.name}. Me gustaría solicitar una cita para ${reasonLabel} en horario de ${timeLabel}. Mi código postal es ${formData.location}.`;
       
       // 5. Reset form
       setFormData({
@@ -99,7 +114,7 @@ export function useContactForm(): UseContactFormReturn {
         const whatsappURL = `https://wa.me/34623378691?text=${encodeURIComponent(mensajeWhatsApp)}`;
         window.location.href = whatsappURL;
         setIsLoading(false);
-      }, 1000);
+      }, 1500);
       
     } catch (err) {
       console.error('Error general:', err);
