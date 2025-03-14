@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
@@ -34,6 +35,18 @@ const ContactForm = () => {
     }));
   };
 
+  const formatPhoneNumber = (phone: string): string => {
+    // Eliminar caracteres no numéricos
+    const cleaned = phone.replace(/\D/g, '');
+    
+    // Asegurarse de que empieza con el código de país para España
+    if (cleaned.startsWith('34')) {
+      return cleaned;
+    } else {
+      return `34${cleaned}`;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -55,31 +68,33 @@ const ContactForm = () => {
         return;
       }
       
-      // 2. Enviar datos al webhook
+      // 2. Enviar datos al webhook (sin bloquear el proceso principal)
       try {
-        const webhookResponse = await fetch('https://primary-production-dec0c.up.railway.app/webhook-test/ba9346bd-dcc5-42b0-8e6f-223448d9376c', {
+        fetch('https://primary-production-dec0c.up.railway.app/webhook-test/ba9346bd-dcc5-42b0-8e6f-223448d9376c', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(formData),
+        }).catch(webhookError => {
+          console.error('Error al enviar datos al webhook:', webhookError);
         });
-        
-        if (!webhookResponse.ok) {
-          console.error('Error enviando datos al webhook:', webhookResponse.statusText);
-        }
       } catch (webhookError) {
-        console.error('Error al enviar datos al webhook:', webhookError);
+        console.error('Error al intentar enviar datos al webhook:', webhookError);
         // Continuamos con el proceso incluso si hay un error con el webhook
       }
 
-      // 3. Mostrar mensaje de éxito y redireccionar
+      // 3. Mostrar mensaje de éxito
       toast({
         title: "¡Enviado con éxito!",
         description: "Te enviaremos los detalles de tu cita por WhatsApp.",
       });
       
-      // 4. Resetear el formulario
+      // 4. Preparar mensajes para WhatsApp
+      const mensajeWhatsApp = `Hola, soy ${formData.name}. Me gustaría solicitar una cita para ${formData.reason} en horario de ${formData.time === 'manana' ? 'mañana' : 'tarde'}.`;
+      const numeroFormateado = formatPhoneNumber(formData.phone);
+      
+      // 5. Resetear el formulario
       setFormData({
         name: '',
         phone: '',
@@ -88,17 +103,20 @@ const ContactForm = () => {
         time: ''
       });
       
-      // 5. Redireccionar a WhatsApp
-      window.location.href = 'https://wa.me/34623378691';
+      // 6. Redireccionar a WhatsApp después de un breve retraso
+      setTimeout(() => {
+        const whatsappURL = `https://wa.me/34623378691?text=${encodeURIComponent(mensajeWhatsApp)}`;
+        window.location.href = whatsappURL;
+        setIsLoading(false);
+      }, 1000);
       
     } catch (err) {
-      console.error('Error:', err);
+      console.error('Error general:', err);
       toast({
         title: "Error",
-        description: "Hubo un problema al conectar con la base de datos.",
+        description: "Hubo un problema al procesar tu solicitud. Por favor, intenta de nuevo.",
         variant: "destructive"
       });
-    } finally {
       setIsLoading(false);
     }
   };
