@@ -39,35 +39,58 @@ const ContactForm = () => {
     setIsLoading(true);
     
     try {
+      // 1. Guardar datos en Supabase
       const { error } = await supabase
         .from('contacts')
         .insert([formData]);
       
       if (error) {
-        console.error('Error submitting form:', error);
+        console.error('Error submitting form to Supabase:', error);
         toast({
           title: "Error",
           description: "Hubo un problema al enviar el formulario. Por favor, intenta de nuevo.",
           variant: "destructive"
         });
-      } else {
-        toast({
-          title: "¡Enviado con éxito!",
-          description: "Te enviaremos los detalles de tu cita por WhatsApp.",
-        });
-        
-        // Resetear el formulario
-        setFormData({
-          name: '',
-          phone: '',
-          location: '',
-          reason: '',
-          time: ''
-        });
-        
-        // Redireccionar a WhatsApp después de guardar en Supabase
-        window.location.href = 'https://wa.me/34623378691';
+        setIsLoading(false);
+        return;
       }
+      
+      // 2. Enviar datos al webhook
+      try {
+        const webhookResponse = await fetch('https://primary-production-dec0c.up.railway.app/webhook-test/ba9346bd-dcc5-42b0-8e6f-223448d9376c', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+        
+        if (!webhookResponse.ok) {
+          console.error('Error enviando datos al webhook:', webhookResponse.statusText);
+        }
+      } catch (webhookError) {
+        console.error('Error al enviar datos al webhook:', webhookError);
+        // Continuamos con el proceso incluso si hay un error con el webhook
+      }
+
+      // 3. Mostrar mensaje de éxito y redireccionar
+      toast({
+        title: "¡Enviado con éxito!",
+        description: "Te enviaremos los detalles de tu cita por WhatsApp.",
+      });
+      
+      // 4. Resetear el formulario
+      setFormData({
+        name: '',
+        phone: '',
+        location: '',
+        reason: '',
+        time: ''
+      });
+      
+      // 5. Redireccionar a WhatsApp
+      window.location.href = 'https://wa.me/34623378691';
+      
     } catch (err) {
       console.error('Error:', err);
       toast({
