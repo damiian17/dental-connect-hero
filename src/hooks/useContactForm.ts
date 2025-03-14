@@ -1,136 +1,134 @@
 
-import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { useToast } from './use-toast';
-import { formatPhoneNumber } from '@/utils/phoneUtils';
+import { useState } from "react";
+import { formatPhoneNumber } from "@/utils/phoneUtils";
+import { useToast } from "@/hooks/use-toast";
 
-export interface ContactFormData {
+export interface FormData {
   name: string;
   phone: string;
-  location: string;
-  reason: string;
-  time: string;
+  email: string;
+  message: string;
+  postalCode: string;
+  city: string;
+  serviceType: string;
+  preferredContact: string;
+  acceptTerms: boolean;
 }
 
-export interface UseContactFormReturn {
-  formData: ContactFormData;
-  isLoading: boolean;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  handleSubmit: (e: React.FormEvent) => Promise<void>;
-}
-
-export function useContactForm(): UseContactFormReturn {
+export const useContactForm = () => {
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState<ContactFormData>({
-    name: '',
-    phone: '',
-    location: '',
-    reason: '',
-    time: ''
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState<FormData>({
+    name: "",
+    phone: "",
+    email: "",
+    message: "",
+    postalCode: "",
+    city: "",
+    serviceType: "general",
+    preferredContact: "whatsapp",
+    acceptTerms: false,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value, type } = e.target;
+    let processedValue = value;
+
+    if (name === "phone") {
+      processedValue = formatPhoneNumber(value);
+    }
+
+    if (type === "checkbox") {
+      const checkbox = e.target as HTMLInputElement;
+      setFormData({
+        ...formData,
+        [name]: checkbox.checked,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: processedValue,
+      });
+    }
   };
 
-  const getReasonLabel = (reasonValue: string): string => {
-    const reasonMap: Record<string, string> = {
-      'implantes': 'Implantes',
-      'ortodincia': 'Ortodoncia',
-      'estetica': 'Estética dental',
-      'revision': 'Revisión general',
-      'otro': 'Otro tratamiento'
-    };
-    return reasonMap[reasonValue] || reasonValue;
-  };
-
-  const getTimeLabel = (timeValue: string): string => {
-    return timeValue === 'manana' ? 'mañana' : 'tarde';
+  const redirectToWhatsApp = (formData: FormData) => {
+    const message = `Hola, soy ${formData.name} y estoy interesado en recibir información sobre servicios de ${formData.serviceType}. ${formData.message}`;
+    const encodedMessage = encodeURIComponent(message);
+    // Format phone to international format (remove any non-digit characters and add country code if needed)
+    const phoneForWhatsApp = formData.phone.replace(/\D/g, "");
+    const whatsappURL = `https://wa.me/34622496475?text=${encodedMessage}`;
+    window.open(whatsappURL, "_blank");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    
+    setIsSubmitting(true);
+
     try {
-      // 1. Save data to Supabase (non-blocking)
-      supabase
-        .from('contacts')
-        .insert([formData])
-        .then(({ error }) => {
-          if (error) {
-            console.error('Error submitting form to Supabase:', error);
-          }
-        })
-        .catch(err => {
-          console.error('Supabase insert error:', err);
-        });
-      
-      // 2. Send data to webhook (non-blocking)
-      try {
-        const webhookUrl = 'https://primary-production-dec0c.up.railway.app/webhook-test/ba9346bd-dcc5-42b0-8e6f-223448d9376c';
-        fetch(webhookUrl, {
-          method: 'POST',
+      const response = await fetch(
+        "https://primary-production-dec0c.up.railway.app/webhook-test/ba9346bd-dcc5-42b0-8e6f-223448d9376c",
+        {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(formData),
-        }).catch(webhookError => {
-          console.error('Error al enviar datos al webhook:', webhookError);
-        });
-      } catch (webhookError) {
-        console.error('Error al intentar enviar datos al webhook:', webhookError);
-        // Continue even if webhook fails
-      }
+        }
+      );
 
-      // 3. Show success message
+      if (response.ok) {
+        toast({
+          title: "Formulario enviado correctamente",
+          description: "Nos pondremos en contacto contigo pronto",
+        });
+
+        // If preferred contact is WhatsApp, redirect to WhatsApp
+        if (formData.preferredContact === "whatsapp") {
+          redirectToWhatsApp(formData);
+        }
+
+        // Reset form
+        setFormData({
+          name: "",
+          phone: "",
+          email: "",
+          message: "",
+          postalCode: "",
+          city: "",
+          serviceType: "general",
+          preferredContact: "whatsapp",
+          acceptTerms: false,
+        });
+      } else {
+        toast({
+          title: "Error al enviar el formulario",
+          description: "Por favor, inténtalo de nuevo más tarde",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
       toast({
-        title: "¡Enviado con éxito!",
-        description: "Te enviaremos los detalles de tu cita por WhatsApp.",
+        title: "Error al enviar el formulario",
+        description: "Por favor, inténtalo de nuevo más tarde",
+        variant: "destructive",
       });
-      
-      // 4. Prepare WhatsApp message
-      const reasonLabel = getReasonLabel(formData.reason);
-      const timeLabel = getTimeLabel(formData.time);
-      
-      const mensajeWhatsApp = `Hola, soy ${formData.name}. Me gustaría solicitar una cita para ${reasonLabel} en horario de ${timeLabel}. Mi código postal es ${formData.location}.`;
-      
-      // 5. Reset form
-      setFormData({
-        name: '',
-        phone: '',
-        location: '',
-        reason: '',
-        time: ''
-      });
-      
-      // 6. Redirect to WhatsApp after delay
-      setTimeout(() => {
-        const whatsappURL = `https://wa.me/34623378691?text=${encodeURIComponent(mensajeWhatsApp)}`;
-        window.location.href = whatsappURL;
-        setIsLoading(false);
-      }, 1500);
-      
-    } catch (err) {
-      console.error('Error general:', err);
-      toast({
-        title: "Error",
-        description: "Hubo un problema al procesar tu solicitud. Por favor, intenta de nuevo.",
-        variant: "destructive"
-      });
-      setIsLoading(false);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return {
     formData,
-    isLoading,
     handleChange,
-    handleSubmit
+    handleSubmit,
+    isSubmitting,
   };
-}
+};
+
+export default useContactForm;
