@@ -1,5 +1,5 @@
 
-import { FormEvent } from 'react';
+import { FormEvent, ChangeEvent } from 'react';
 import { Button } from '../ui/button';
 import FormField from './FormField';
 import { Loader2 } from 'lucide-react';
@@ -17,6 +17,7 @@ const ContactFormContent = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormField
           id="name"
+          name="name"
           label="Nombre completo"
           type="text"
           placeholder="Tu nombre"
@@ -27,8 +28,9 @@ const ContactFormContent = () => {
         
         <FormField
           id="email"
+          name="email"
           label="Correo electrónico"
-          type="email"
+          type="text"
           placeholder="tu@email.com"
           required
           value={formData.email}
@@ -37,6 +39,7 @@ const ContactFormContent = () => {
         
         <FormField
           id="phone"
+          name="phone"
           label="Teléfono"
           type="tel"
           placeholder="+34 600 000 000"
@@ -47,6 +50,7 @@ const ContactFormContent = () => {
         
         <FormField
           id="location"
+          name="location"
           label="Ciudad"
           type="text"
           placeholder="Tu ciudad"
@@ -56,6 +60,7 @@ const ContactFormContent = () => {
         
         <FormField
           id="reason"
+          name="reason"
           label="Motivo de consulta"
           type="select"
           value={formData.reason}
@@ -75,6 +80,7 @@ const ContactFormContent = () => {
         
         <FormField
           id="time"
+          name="time"
           label="Mejor horario para contacto"
           type="select"
           value={formData.time}
@@ -91,6 +97,7 @@ const ContactFormContent = () => {
       
       <FormField
         id="message"
+        name="message"
         label="Mensaje (opcional)"
         type="textarea"
         placeholder="Cuéntanos más sobre lo que necesitas..."

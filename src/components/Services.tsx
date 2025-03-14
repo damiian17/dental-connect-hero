@@ -2,18 +2,18 @@
 import { useState } from 'react';
 import { services } from '@/assets/mockData';
 import { Card } from './ui/card';
-import { Layers, PlusCircle, AlertTriangle, Baby, Smile, ZapOff, Scanner, Tooth } from 'lucide-react';
+import { Layers, PlusCircle, AlertTriangle, Baby, Smile, ZapOff, Scan, Stethoscope } from 'lucide-react';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import { cn } from '@/lib/utils';
 
 const IconMap: Record<string, any> = {
-  Tooth: Tooth,
+  Tooth: Stethoscope, // Replace Tooth with Stethoscope
   Layers: Layers,
   PlusCircle: PlusCircle,
   Baby: Baby,
   Smile: Smile,
   ZapOff: ZapOff,
-  Scanner: Scanner,
+  Scanner: Scan, // Replace Scanner with Scan
   AlertTriangle: AlertTriangle
 };
 
