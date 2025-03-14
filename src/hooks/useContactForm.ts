@@ -66,9 +66,6 @@ export function useContactForm(): UseContactFormReturn {
           if (error) {
             console.error('Error submitting form to Supabase:', error);
           }
-        })
-        .catch(err => {
-          console.error('Supabase insert error:', err);
         });
       
       // 2. Send data to webhook (non-blocking)
