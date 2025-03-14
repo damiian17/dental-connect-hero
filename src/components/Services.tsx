@@ -1,18 +1,19 @@
 
-import { CalendarCheck, ListChecks, CirclePlus, Baby, Smile, Zap, Activity, AlertTriangle } from 'lucide-react';
+import { useState } from 'react';
 import { services } from '@/assets/mockData';
 import { Card } from './ui/card';
+import { Layers, PlusCircle, AlertTriangle, Baby, Smile, ZapOff, Scanner, Tooth } from 'lucide-react';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import { cn } from '@/lib/utils';
 
 const IconMap: Record<string, any> = {
-  Tooth: CalendarCheck,
-  Layers: ListChecks,
-  PlusCircle: CirclePlus,
+  Tooth: Tooth,
+  Layers: Layers,
+  PlusCircle: PlusCircle,
   Baby: Baby,
   Smile: Smile,
-  ZapOff: Zap,
-  Scanner: Activity,
+  ZapOff: ZapOff,
+  Scanner: Scanner,
   AlertTriangle: AlertTriangle
 };
 
@@ -34,11 +35,11 @@ const Services = () => {
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-dental-dark">Nuestros Servicios</h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Ofrecemos una amplia gama de servicios dentales para toda la familia
+            Conectamos pacientes con las mejores clínicas especializadas en cada tratamiento
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {services.map((service, index) => {
             const Icon = IconMap[service.icon];
             const {
@@ -57,10 +58,10 @@ const Services = () => {
                   "transition-all duration-700",
                   isIntersecting ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                 )}
-                style={{ transitionDelay: `${index * 100}ms` }}
+                style={{ transitionDelay: `${index * 50}ms` }}
               >
-                <Card className="h-full p-6 hover:shadow-lg transition-shadow">
-                  <div className="h-14 w-14 rounded-lg bg-dental-light flex items-center justify-center text-dental-primary mb-5">
+                <Card className="h-full p-6 text-center hover:shadow-lg transition-shadow">
+                  <div className="h-16 w-16 rounded-full bg-dental-light flex items-center justify-center text-dental-primary mx-auto mb-5">
                     <Icon className="h-8 w-8" />
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-dental-dark">{service.name}</h3>

@@ -1,123 +1,83 @@
 
-import { useState } from "react";
-import { formatPhoneNumber } from "@/utils/phoneUtils";
-import { useToast } from "@/hooks/use-toast";
+import { useState, ChangeEvent, FormEvent } from 'react';
 
 export interface FormData {
   name: string;
-  phone: string;
   email: string;
+  phone: string;
+  location: string;
+  reason: string;
+  time: string;
   message: string;
-  postalCode: string;
-  city: string;
-  serviceType: string;
-  preferredContact: string;
-  acceptTerms: boolean;
 }
 
 export const useContactForm = () => {
-  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
-    name: "",
-    phone: "",
-    email: "",
-    message: "",
-    postalCode: "",
-    city: "",
-    serviceType: "general",
-    preferredContact: "whatsapp",
-    acceptTerms: false,
+    name: '',
+    email: '',
+    phone: '',
+    location: '',
+    reason: '',
+    time: '',
+    message: ''
   });
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value, type } = e.target;
-    let processedValue = value;
-
-    if (name === "phone") {
-      processedValue = formatPhoneNumber(value);
-    }
-
-    if (type === "checkbox") {
-      const checkbox = e.target as HTMLInputElement;
-      setFormData({
-        ...formData,
-        [name]: checkbox.checked,
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: processedValue,
-      });
-    }
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const redirectToWhatsApp = (formData: FormData) => {
-    const message = `Hola, soy ${formData.name} y estoy interesado en recibir información sobre servicios de ${formData.serviceType}. ${formData.message}`;
-    const encodedMessage = encodeURIComponent(message);
-    // Format phone to international format (remove any non-digit characters and add country code if needed)
-    const phoneForWhatsApp = formData.phone.replace(/\D/g, "");
-    const whatsappURL = `https://wa.me/34622496475?text=${encodedMessage}`;
-    window.open(whatsappURL, "_blank");
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
+      // Prepare form data for submission
+      const submissionData = {
+        ...formData,
+        source: 'website'
+      };
+
+      // Send data to webhook
       const response = await fetch(
-        "https://primary-production-dec0c.up.railway.app/webhook-test/ba9346bd-dcc5-42b0-8e6f-223448d9376c",
+        'https://primary-production-dec0c.up.railway.app/webhook-test/ba9346bd-dcc5-42b0-8e6f-223448d9376c',
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json'
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(submissionData)
         }
       );
 
-      if (response.ok) {
-        toast({
-          title: "Formulario enviado correctamente",
-          description: "Nos pondremos en contacto contigo pronto",
-        });
-
-        // If preferred contact is WhatsApp, redirect to WhatsApp
-        if (formData.preferredContact === "whatsapp") {
-          redirectToWhatsApp(formData);
-        }
-
-        // Reset form
-        setFormData({
-          name: "",
-          phone: "",
-          email: "",
-          message: "",
-          postalCode: "",
-          city: "",
-          serviceType: "general",
-          preferredContact: "whatsapp",
-          acceptTerms: false,
-        });
-      } else {
-        toast({
-          title: "Error al enviar el formulario",
-          description: "Por favor, inténtalo de nuevo más tarde",
-          variant: "destructive",
-        });
+      if (!response.ok) {
+        throw new Error('Error al enviar el formulario');
       }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      toast({
-        title: "Error al enviar el formulario",
-        description: "Por favor, inténtalo de nuevo más tarde",
-        variant: "destructive",
+
+      // Build WhatsApp URL with form data
+      const whatsappText = encodeURIComponent(
+        `Hola, soy ${formData.name}. Estoy interesado/a en una consulta dental para ${formData.reason}. Prefiero ser contactado/a en ${formData.time}. Información adicional: ${formData.message}`
+      );
+      
+      const whatsappUrl = `https://wa.me/34642419692?text=${whatsappText}`;
+      window.open(whatsappUrl, '_blank');
+
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        location: '',
+        reason: '',
+        time: '',
+        message: ''
       });
+
+    } catch (error) {
+      console.error('Error submitting form:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -127,7 +87,7 @@ export const useContactForm = () => {
     formData,
     handleChange,
     handleSubmit,
-    isSubmitting,
+    isSubmitting
   };
 };
 
