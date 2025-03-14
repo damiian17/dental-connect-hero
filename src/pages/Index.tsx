@@ -2,8 +2,14 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
+import HowItWorks from "@/components/HowItWorks";
 import Services from "@/components/Services";
+import WhyChooseUs from "@/components/WhyChooseUs";
+import Testimonials from "@/components/Testimonials";
+import FAQ from "@/components/FAQ";
+import Map from "@/components/Map";
 import ContactForm from "@/components/ContactForm";
+import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 import ChatButton from "@/components/ui/ChatButton";
 import { useEffect } from "react";
@@ -41,8 +47,14 @@ const Index = () => {
       <main>
         <Hero />
         <Benefits />
+        <HowItWorks />
         <Services />
+        <WhyChooseUs />
+        <Testimonials />
+        <FAQ />
+        <Map />
         <ContactForm />
+        <FinalCTA />
       </main>
       <Footer />
       <ChatButton />
