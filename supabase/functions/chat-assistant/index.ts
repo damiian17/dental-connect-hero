@@ -1,4 +1,3 @@
-
 // supabase/functions/chat-assistant/index.ts
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
@@ -52,16 +51,19 @@ serve(async (req) => {
     }
 
     // Log key format for debugging (safely)
-    console.log("API Key format check:", API_KEY.startsWith("sk-") ? "Valid prefix" : "Invalid prefix");
+    console.log("API Key format check:", API_KEY.substring(0, 7) + "...");
     console.log("API Key length:", API_KEY.length);
 
-    // Initialize OpenAI client
+    // Initialize OpenAI client with v2 headers
     try {
       const openai = new OpenAI({
         apiKey: API_KEY,
+        defaultHeaders: {
+          'OpenAI-Beta': 'assistants=v2'
+        }
       });
 
-      console.log("OpenAI client initialized successfully");
+      console.log("OpenAI client initialized successfully with v2 headers");
 
       // Create or retrieve a thread
       let currentThreadId = threadId;
