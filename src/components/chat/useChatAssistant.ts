@@ -1,6 +1,5 @@
 // src/components/chat/useChatAssistant.ts
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ChatMessage } from './types';
 
@@ -42,17 +41,30 @@ export const useChatAssistant = () => {
       try {
         console.log('Sending message to assistant:', { message: userMessage, threadId });
         
-        // Call the Supabase Edge Function
-        const { data, error } = await supabase.functions.invoke('chat-assistant', {
-          body: { 
+        // Llamada directa a la función Edge usando fetch
+        const response = await fetch('https://ewxgsseelkjyxkfxbsqu.supabase.co/functions/v1/chat-assistant', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
             message: userMessage, 
             threadId 
-          }
+          })
         });
 
+        let data = null;
+        let error = null;
+
+        if (response.ok) {
+          data = await response.json();
+        } else {
+          error = new Error(`Error en la llamada: ${response.status} ${response.statusText}`);
+        }
+
         if (error) {
-          console.error('Supabase function error:', error);
-          throw new Error(error.message);
+          console.error('Function error:', error);
+          throw error;
         }
 
         if (!data) {
