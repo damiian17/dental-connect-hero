@@ -95,7 +95,7 @@ serve(async (req) => {
     // Poll for the completion of the run
     let runStatus = runData.status;
     let attempts = 0;
-    const maxAttempts = 30; // Maximum number of polling attempts
+    const maxAttempts = 60; // Increase maximum polling attempts
     
     while (runStatus !== 'completed' && runStatus !== 'failed' && attempts < maxAttempts) {
       // Wait for a few seconds
@@ -119,10 +119,15 @@ serve(async (req) => {
       runStatus = statusData.status;
       attempts++;
       console.log(`Run status: ${runStatus}, attempt: ${attempts}`);
+
+      // If the run requires action, we need to handle it
+      if (runStatus === 'requires_action') {
+        throw new Error("Run requires action but this functionality is not implemented");
+      }
     }
     
     if (runStatus !== 'completed') {
-      throw new Error(`Run did not complete successfully. Final status: ${runStatus}`);
+      throw new Error(`Run did not complete successfully. Final status: ${runStatus} after ${attempts} attempts`);
     }
 
     // Get the latest messages from the thread
@@ -148,7 +153,17 @@ serve(async (req) => {
     }
     
     const latestAssistantMessage = assistantMessages[0];
-    const assistantResponse = latestAssistantMessage.content[0].text.value;
+    let assistantResponse = "No se pudo obtener una respuesta.";
+    
+    // Check if content exists and has the expected structure
+    if (latestAssistantMessage.content && 
+        Array.isArray(latestAssistantMessage.content) && 
+        latestAssistantMessage.content.length > 0 &&
+        latestAssistantMessage.content[0].type === 'text' &&
+        latestAssistantMessage.content[0].text &&
+        latestAssistantMessage.content[0].text.value) {
+      assistantResponse = latestAssistantMessage.content[0].text.value;
+    }
     
     console.log(`Assistant response: ${assistantResponse}`);
     
@@ -166,7 +181,8 @@ serve(async (req) => {
     console.error('Error in chat-assistant function:', error);
     return new Response(
       JSON.stringify({
-        error: error.message
+        error: error.message,
+        response: "Lo siento, ocurrió un error al procesar tu mensaje. Por favor, intenta de nuevo más tarde."
       }),
       {
         status: 500,
