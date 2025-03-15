@@ -1,4 +1,4 @@
-
+// supabase/functions/chat-assistant/index.ts
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
@@ -8,9 +8,9 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// The assistant ID to use
-const ASSISTANT_ID = "asst_r0GtYxfZYARE3UUtheC3jlk4";
-const API_KEY = "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";
+// Get environment variables
+const ASSISTANT_ID = Deno.env.get("OPENAI_ASSISTANT_ID");
+const API_KEY = Deno.env.get("OPENAI_API_KEY");
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -24,7 +24,11 @@ serve(async (req) => {
 
     // Initialize OpenAI client
     if (!API_KEY) {
-      throw new Error("API_KEY is not set");
+      throw new Error("OPENAI_API_KEY is not set in environment variables");
+    }
+
+    if (!ASSISTANT_ID) {
+      throw new Error("OPENAI_ASSISTANT_ID is not set in environment variables");
     }
 
     // Create or retrieve a thread
@@ -119,6 +123,12 @@ serve(async (req) => {
       runStatus = statusData.status;
       attempts++;
       console.log(`Run status: ${runStatus}, attempt: ${attempts}`);
+      
+      // Handle required action
+      if (runStatus === 'requires_action') {
+        console.log("Run requires action - not implemented in this example");
+        break;
+      }
     }
     
     if (runStatus !== 'completed') {
@@ -150,7 +160,7 @@ serve(async (req) => {
     const latestAssistantMessage = assistantMessages[0];
     const assistantResponse = latestAssistantMessage.content[0].text.value;
     
-    console.log(`Assistant response: ${assistantResponse}`);
+    console.log(`Assistant response: ${assistantResponse.substring(0, 50)}...`);
     
     // Return the assistant's response and the thread ID
     return new Response(
