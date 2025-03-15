@@ -1,6 +1,6 @@
-
+// src/components/chat/ChatButton.tsx
 import { useState } from 'react';
-import { MessageSquare, X, Bot } from 'lucide-react';
+import { MessageSquare, X, Bot, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ChatButtonProps } from './types';
@@ -18,7 +18,8 @@ export const ChatButton = ({ className }: ChatButtonProps) => {
     isLoading,
     messagesEndRef,
     handleSendMessage,
-    handleKeyPress
+    handleKeyPress,
+    resetConversation
   } = useChatAssistant();
 
   const toggleChat = () => {
@@ -35,12 +36,21 @@ export const ChatButton = ({ className }: ChatButtonProps) => {
               <h3 className="font-medium">Carla</h3>
               <p className="text-xs text-white/80">Asistente Virtual</p>
             </div>
-            <button 
-              onClick={toggleChat}
-              className="text-white/80 hover:text-white transition-colors ml-auto"
-            >
-              <X size={18} />
-            </button>
+            <div className="ml-auto flex items-center gap-2">
+              <button 
+                onClick={resetConversation}
+                className="text-white/80 hover:text-white transition-colors"
+                title="Reiniciar conversación"
+              >
+                <RefreshCw size={16} />
+              </button>
+              <button 
+                onClick={toggleChat}
+                className="text-white/80 hover:text-white transition-colors"
+              >
+                <X size={18} />
+              </button>
+            </div>
           </div>
           <div className="p-4 bg-gray-50 h-72 overflow-y-auto">
             {messages.map((message, index) => (
