@@ -1,5 +1,3 @@
 
-import { PredefinedQA } from './types';
-
-// Empty predefined Q&A as we're using OpenAI Assistant directly through Supabase Edge Function
-export const predefinedQA: PredefinedQA = {};
+// This file is intentionally empty as we're using the OpenAI assistant directly
+export const predefinedQA: Record<string, string> = {};

@@ -1,3 +1,4 @@
+
 // src/components/chat/useChatAssistant.ts
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -18,6 +19,7 @@ export const useChatAssistant = () => {
     const savedThreadId = localStorage.getItem('chatThreadId');
     if (savedThreadId) {
       setThreadId(savedThreadId);
+      console.log('Loaded threadId from localStorage:', savedThreadId);
     }
   }, []);
 
@@ -41,7 +43,7 @@ export const useChatAssistant = () => {
       try {
         console.log('Sending message to assistant:', { message: userMessage, threadId });
         
-        // Llamada directa a la función Edge usando fetch
+        // Call the Supabase Edge Function
         const response = await fetch('https://ewxgsseelkjyxkfxbsqu.supabase.co/functions/v1/chat-assistant', {
           method: 'POST',
           headers: {
@@ -53,30 +55,24 @@ export const useChatAssistant = () => {
           })
         });
 
-        let data = null;
-        let error = null;
-
-        if (response.ok) {
-          data = await response.json();
-        } else {
-          error = new Error(`Error en la llamada: ${response.status} ${response.statusText}`);
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Response not OK:', response.status, errorText);
+          throw new Error(`Error en la llamada: ${response.status} ${response.statusText}`);
         }
 
-        if (error) {
-          console.error('Function error:', error);
-          throw error;
-        }
+        const data = await response.json();
+        console.log('Received response from edge function:', data);
 
         if (!data) {
           throw new Error('No data received from assistant');
         }
 
-        console.log('Received response:', data);
-
         // Store the thread ID for future messages
         if (data.threadId) {
           setThreadId(data.threadId);
           localStorage.setItem('chatThreadId', data.threadId);
+          console.log('Saved new threadId:', data.threadId);
         }
 
         // Add the assistant's response to the messages
