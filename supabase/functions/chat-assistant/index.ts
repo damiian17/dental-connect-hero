@@ -1,3 +1,4 @@
+
 // supabase/functions/chat-assistant/index.ts
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
@@ -31,6 +32,8 @@ serve(async (req) => {
       throw new Error("OPENAI_ASSISTANT_ID is not set in environment variables");
     }
 
+    console.log("Using API key format: " + API_KEY.substring(0, 7) + "...");
+    
     // Create or retrieve a thread
     let currentThreadId = threadId;
     if (!currentThreadId) {
@@ -46,8 +49,9 @@ serve(async (req) => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Failed to create thread: ${JSON.stringify(errorData)}`);
+        const errorText = await response.text();
+        console.error(`Failed to create thread: ${errorText}`);
+        throw new Error(`Failed to create thread: ${errorText}`);
       }
 
       const data = await response.json();
@@ -70,8 +74,9 @@ serve(async (req) => {
     });
 
     if (!messageResponse.ok) {
-      const errorData = await messageResponse.json();
-      throw new Error(`Failed to add message to thread: ${JSON.stringify(errorData)}`);
+      const errorText = await messageResponse.text();
+      console.error(`Failed to add message to thread: ${errorText}`);
+      throw new Error(`Failed to add message to thread: ${errorText}`);
     }
 
     // Run the assistant on the thread
@@ -88,8 +93,9 @@ serve(async (req) => {
     });
 
     if (!runResponse.ok) {
-      const errorData = await runResponse.json();
-      throw new Error(`Failed to run assistant: ${JSON.stringify(errorData)}`);
+      const errorText = await runResponse.text();
+      console.error(`Failed to run assistant: ${errorText}`);
+      throw new Error(`Failed to run assistant: ${errorText}`);
     }
 
     const runData = await runResponse.json();
@@ -115,8 +121,9 @@ serve(async (req) => {
       });
       
       if (!statusResponse.ok) {
-        const errorData = await statusResponse.json();
-        throw new Error(`Failed to get run status: ${JSON.stringify(errorData)}`);
+        const errorText = await statusResponse.text();
+        console.error(`Failed to get run status: ${errorText}`);
+        throw new Error(`Failed to get run status: ${errorText}`);
       }
       
       const statusData = await statusResponse.json();
@@ -145,8 +152,9 @@ serve(async (req) => {
     });
 
     if (!listMessagesResponse.ok) {
-      const errorData = await listMessagesResponse.json();
-      throw new Error(`Failed to list messages: ${JSON.stringify(errorData)}`);
+      const errorText = await listMessagesResponse.text();
+      console.error(`Failed to list messages: ${errorText}`);
+      throw new Error(`Failed to list messages: ${errorText}`);
     }
 
     const messagesData = await listMessagesResponse.json();
