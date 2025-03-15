@@ -34,7 +34,10 @@ export const useChatAssistant = () => {
       
       // Call the Supabase Edge Function
       const { data, error } = await supabase.functions.invoke('chat-assistant', {
-        body: { message: userMessage, threadId }
+        body: { 
+          message: userMessage, 
+          threadId 
+        }
       });
 
       if (error) {
