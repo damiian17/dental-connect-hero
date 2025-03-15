@@ -30,18 +30,23 @@ export const useChatAssistant = () => {
     setIsLoading(true);
 
     try {
+      console.log('Sending message to assistant:', { message: userMessage, threadId });
+      
       // Call the Supabase Edge Function
       const { data, error } = await supabase.functions.invoke('chat-assistant', {
         body: { message: userMessage, threadId }
       });
 
       if (error) {
+        console.error('Supabase function error:', error);
         throw new Error(error.message);
       }
 
       if (!data) {
         throw new Error('No data received from assistant');
       }
+
+      console.log('Received response:', data);
 
       // Store the thread ID for future messages
       if (data.threadId) {

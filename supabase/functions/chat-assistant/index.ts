@@ -12,9 +12,6 @@ const corsHeaders = {
 const ASSISTANT_ID = "asst_r0GtYxfZYARE3UUtheC3jlk4";
 const API_KEY = "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";
 
-// Create a cache for thread IDs
-const threadCache = new Map();
-
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
