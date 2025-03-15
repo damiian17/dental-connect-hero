@@ -2,8 +2,6 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
-import HowItWorks from "@/components/HowItWorks";
-import Services from "@/components/Services";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
 import ChatButton from "@/components/ui/ChatButton";
@@ -42,8 +40,6 @@ const Index = () => {
       <main>
         <Hero />
         <Benefits />
-        <HowItWorks />
-        <Services />
         <ContactForm />
       </main>
       <Footer />
