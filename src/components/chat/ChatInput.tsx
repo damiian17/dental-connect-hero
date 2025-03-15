@@ -1,4 +1,4 @@
-
+// src/components/chat/ChatInput.tsx
 import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
 import React from 'react';
@@ -26,14 +26,16 @@ export const ChatInput = ({
         onChange={(e) => setInputValue(e.target.value)}
         onKeyPress={handleKeyPress}
         placeholder="Escribe tu pregunta..." 
-        className="input-field text-sm flex-1 py-2" 
+        className="input-field text-sm flex-1 py-2 px-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-dental-primary/50 focus:border-dental-primary transition-colors" 
         disabled={isLoading}
+        aria-label="Mensaje para el asistente"
       />
       <Button 
         size="sm" 
-        className="py-2"
+        className="py-2 px-4 bg-dental-primary hover:bg-dental-primary/90 transition-colors"
         onClick={handleSendMessage}
-        disabled={isLoading}
+        disabled={isLoading || !inputValue.trim()}
+        aria-label={isLoading ? "Enviando..." : "Enviar mensaje"}
       >
         {isLoading ? 
           <div className="w-4 h-4 rounded-full border-2 border-t-transparent border-white animate-spin"></div> :
