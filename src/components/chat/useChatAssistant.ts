@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
 import { ChatMessage } from './types';
-import { predefinedQA } from './predefinedQA';
 
 export const useChatAssistant = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -57,31 +56,17 @@ export const useChatAssistant = () => {
     } catch (error) {
       console.error('Error communicating with assistant:', error);
       
-      // Fallback to predefined answers
-      const bestMatch = Object.entries(predefinedQA).reduce((best, [question, answer]) => {
-        const similarity = question.toLowerCase().includes(userMessage.toLowerCase()) ||
-                          userMessage.toLowerCase().includes(question.toLowerCase());
-        return similarity ? [question, answer] : best;
-      }, ['', '']);
-
-      if (bestMatch[1]) {
-        setTimeout(() => {
-          setMessages(prev => [...prev, { type: 'bot', content: bestMatch[1] }]);
-          setIsLoading(false);
-        }, 500);
-      } else {
-        setTimeout(() => {
-          setMessages(prev => [...prev, { 
-            type: 'bot', 
-            content: "Lo siento, no he entendido tu pregunta. ¿Podrías reformularla o elegir una de las preguntas frecuentes?" 
-          }]);
-          setIsLoading(false);
-        }, 500);
-      }
+      setTimeout(() => {
+        setMessages(prev => [...prev, { 
+          type: 'bot', 
+          content: "Lo siento, estoy teniendo problemas para conectarme. Por favor, inténtalo de nuevo más tarde." 
+        }]);
+        setIsLoading(false);
+      }, 500);
 
       toast({
         title: 'Error de conexión',
-        description: 'Usando respuestas predefinidas como respaldo.',
+        description: 'No se pudo conectar con el asistente. Por favor, inténtalo de nuevo.',
         variant: 'destructive',
       });
     }

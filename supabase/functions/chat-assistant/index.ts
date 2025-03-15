@@ -10,7 +10,7 @@ const corsHeaders = {
 
 // The assistant ID to use
 const ASSISTANT_ID = "asst_r0GtYxfZYARE3UUtheC3jlk4";
-const API_KEY = Deno.env.get("OPENAI_API_KEY");
+const API_KEY = "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";
 
 // Create a cache for thread IDs
 const threadCache = new Map();
@@ -27,7 +27,7 @@ serve(async (req) => {
 
     // Initialize OpenAI client
     if (!API_KEY) {
-      throw new Error("OPENAI_API_KEY is not set in environment variables");
+      throw new Error("API_KEY is not set");
     }
 
     // Create or retrieve a thread
