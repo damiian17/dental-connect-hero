@@ -56,9 +56,9 @@ export const useChatAssistant = () => {
         });
 
         if (!response.ok) {
-          const errorText = await response.text();
-          console.error('Response not OK:', response.status, errorText);
-          throw new Error(`Error en la llamada: ${response.status} ${response.statusText}`);
+          const errorData = await response.json();
+          console.error('Response not OK:', response.status, errorData);
+          throw new Error(`Error: ${errorData.error || response.statusText}`);
         }
 
         const data = await response.json();
@@ -102,7 +102,7 @@ export const useChatAssistant = () => {
 
         toast({
           title: 'Error de conexión',
-          description: 'No se pudo conectar con el asistente. Por favor, inténtalo de nuevo.',
+          description: `No se pudo conectar con el asistente: ${error.message}`,
           variant: 'destructive',
         });
       }
