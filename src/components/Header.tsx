@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from './ui/button';
@@ -11,6 +12,7 @@ const Header = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -21,6 +23,10 @@ const Header = () => {
 
   const navItems = [
     { label: 'Inicio', href: '#' },
+    { label: 'Servicios', href: '#servicios' },
+    { label: 'Cómo funciona', href: '#como-funciona' },
+    { label: 'Testimonios', href: '#testimonios' },
+    { label: 'FAQ', href: '#faq' },
     { label: 'Contacto', href: '#contacto' },
   ];
 
@@ -40,10 +46,11 @@ const Header = () => {
               </span>
             </a>
           </div>
+
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
-              
+              <a
                 key={item.label}
                 href={item.href}
                 className="text-gray-700 hover:text-dental-primary transition-colors text-sm font-medium"
@@ -52,10 +59,12 @@ const Header = () => {
               </a>
             ))}
           </nav>
+
           {/* Call button */}
           <div className="hidden md:flex items-center">
             <Button>Pedir Cita</Button>
           </div>
+
           {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
@@ -67,12 +76,13 @@ const Header = () => {
             </button>
           </div>
         </div>
+
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg border-t border-gray-100 animate-fade-in-down">
             <nav className="flex flex-col p-4">
               {navItems.map((item) => (
-                
+                <a
                   key={item.label}
                   href={item.href}
                   className="py-3 text-gray-700 hover:text-dental-primary transition-colors font-medium"
