@@ -1,20 +1,14 @@
-
 import { Facebook, Twitter, Instagram, Linkedin, Phone, Mail, MapPin } from 'lucide-react';
-
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  
-  return (
-    <footer className="bg-gray-900 text-white pt-16 pb-8">
+  return <footer className="bg-gray-900 text-white pt-16 pb-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <div>
             <h3 className="text-2xl font-bold mb-6 bg-gradient-to-r from-dental-primary to-dental-secondary bg-clip-text text-transparent">
               DentalConnect
             </h3>
-            <p className="text-gray-400 mb-6">
-              Conectamos a pacientes con las mejores clínicas dentales según sus necesidades específicas.
-            </p>
+            
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-dental-primary transition-colors">
                 <Facebook size={20} />
@@ -68,12 +62,7 @@ const Footer = () => {
               </div>
             </div>
             
-            <div className="bg-gray-800 rounded-lg p-4 mt-4">
-              <p className="text-sm text-gray-300">
-                <strong>Urgencias 24/7:</strong><br />
-                Disponibles todos los días, incluso festivos.
-              </p>
-            </div>
+            
           </div>
         </div>
         
@@ -86,8 +75,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
